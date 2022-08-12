@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            text-align: center;
+
+        }
+
+        
+        #game {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            width: 300px;
+            margin: auto;
+
+        }
+
+        .case {
+            border: 1px solid black;
+            height: 100px;
+            line-height: 100px;
+            text-align: center;
+            font-size: 60px;
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+    <h1>My Game</h1>
+    <div id="game">
+        <div data-index="0" class="case"></div>
+        <div data-index="1" class="case"></div>
+        <div data-index="2" class="case"></div>
+        <div data-index="3" class="case"></div>
+        <div data-index="4" class="case"></div>
+        <div data-index="5" class="case"></div>
+        <div data-index="6" class="case"></div>
+        <div data-index="7" class="case"></div>
+        <div data-index="8" class="case"></div>
+    </div>
+    <h2></h2>
+
+    <button id="reset">reset</button>
+
+<script>
+    const statut = document.querySelector("h2")
+    let activeGame = true 
+    let playerNow = "X"
+    let StatueOfGame = ["","","","","","","","",""]
+
+    const win = () => `player ${playerNow} win `
+    const equality = () => "equality"
+    const turnPlayer = () => `its for player ${playerNow}`
+
+
+    const victoryConditions = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6],
+    ]
+
+    document.querySelectorAll(".case").forEach(cell => cell.addEventListener("click", controleClickCase))
+    document.querySelector("#reset").addEventListener("click", replay)
+
+
+    function controleClickCase() {
+        const indexCase = parseInt(this.dataset.index)
+        if (StatueOfGame[indexCase] != "" || !activeGame) {
+            return 
+        }
+
+        StatueOfGame[indexCase] = playerNow
+        this.innerHTML = playerNow
+
+        winVerif()
+        
+    }
+
+    function winVerif() {
+        let winningRound = false
+
+        for (let victorycondition of victoryConditions) {
+            let val1 = StatueOfGame[victorycondition[0]]
+            let val2 = StatueOfGame[victorycondition[1]]
+            let val3 = StatueOfGame[victorycondition[2]]
+            if (val1 == "" || val2=="" || val3=="") {
+                continue  
+            }
+            if (val1 == val2 && val2 == val3) {
+                winningRound = true 
+                break
+            
+            }
+        
+        }
+        if (winningRound) {
+            statut.innerHTML = win()
+            activeGame = false
+            return
+            
+        }
+
+        if (!StatueOfGame.includes("")) {
+            statut.innerHTML = equality()
+            activeGame = false 
+            return
+            
+        }
+
+        playerNow = playerNow === "X" ? "O" : "X"
+        statut.innerHTML = turnPlayer()
+        
+    }
+
+    function replay() {
+        playerNow = "X"
+        StatueOfGame = ["","","","","","","","",""]
+        activeGame = true
+        document.querySelectorAll(".case").forEach(cell => cell.innerHTML = "")
+        statut.innerHTML = turnPlayer()
+        
+    }
+
+</script>
+
+
+
+</body>
+
+</html>
